@@ -24,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		665F5F081C79A4AE00732432 /* playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = playground.playground; sourceTree = "<group>"; };
 		66BA53EF1C799D6B0077A3EA /* robomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = robomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66BA53F21C799D6B0077A3EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		66BA53F41C799D6B0077A3EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -74,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				66BA53F21C799D6B0077A3EA /* AppDelegate.swift */,
+				665F5F081C79A4AE00732432 /* playground.playground */,
 				66BA53F41C799D6B0077A3EA /* Assets.xcassets */,
 				66BA53F61C799D6B0077A3EA /* MainMenu.xib */,
 				66BA53F91C799D6B0077A3EA /* Info.plist */,
@@ -373,6 +375,7 @@
 				66BA54091C799D6B0077A3EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		66BA540A1C799D6B0077A3EA /* Build configuration list for PBXNativeTarget "robomodoroTests" */ = {
 			isa = XCConfigurationList;
@@ -381,6 +384,7 @@
 				66BA540C1C799D6B0077A3EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
