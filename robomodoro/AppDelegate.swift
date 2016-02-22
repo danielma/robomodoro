@@ -23,6 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   let menu = NSMenu()
   let workTime = 25 * 60.0
   let breakTime = 5 * 60.0
+  let showSeconds = false
   var startedSectionAt = 0
   var countdownUntil = NSDate()
   var currentMode = PomodoroMode.Disabled
@@ -94,14 +95,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func showNotification(text: String) {
-    //let myPopup: NSAlert = NSAlert()
-    //myPopup.messageText = text
-    //myPopup.informativeText = "With love, PiCO Modoro"
-    //myPopup.alertStyle = NSAlertStyle.WarningAlertStyle
-    //myPopup.addButtonWithTitle("OK")
-    //myPopup.runModal()
-
-    // NSApplication.sharedApplication().activateIgnoringOtherApps(true)
     popupLabel.title = text
     window.orderFrontRegardless()
 
@@ -119,8 +112,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     let intervalAsInteger = Int(interval)
     let seconds = intervalAsInteger % 60
-    let minutes = (intervalAsInteger / 60) % 60
+    let minutes = Int(showSeconds ? (intervalAsInteger / 60) % 60 : round(interval / 60.0) % 60)
 
-    return NSString(format: "%0.2d:%0.2d", minutes, seconds)
+    if (showSeconds) {
+      return NSString(format: "%0.2d:%0.2d", minutes, seconds)
+    } else {
+      return NSString(format: "%0.1d", minutes)
+    }
   }
 }
