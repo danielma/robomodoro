@@ -9,7 +9,7 @@
 import Cocoa
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDelegate {
   @IBOutlet weak var window: NSWindow!
   @IBOutlet weak var popupLabel: NSTextFieldCell!
 
@@ -28,6 +28,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var countdownUntil = NSDate()
   var currentMode = PomodoroMode.Disabled
   var currentTimer = NSTimer()
+  var userNotifications = NSUserNotificationCenter.defaultUserNotificationCenter()
+  var notificationCenter = NSNotificationCenter.defaultCenter()
 
   func applicationDidFinishLaunching(aNotification: NSNotification) {
     updateMenuText()
@@ -95,15 +97,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func showNotification(text: String) {
-    popupLabel.title = text
-    window.orderFrontRegardless()
+    let notification:NSUserNotification = NSUserNotification()
+    notification.title = "Robomodoro"
+    notification.subtitle = "\(currentMode.rawValue) \(text)"
+    notification.soundName = NSUserNotificationDefaultSoundName
 
-    let delta: Int64 = 3 * Int64(NSEC_PER_SEC)
-    let time = dispatch_time(DISPATCH_TIME_NOW, delta)
-
-    dispatch_after(time, dispatch_get_main_queue(), {
-      self.window.orderOut("")
-    })
+    userNotifications.scheduleNotification(notification)
   }
 
   // thanks http://stackoverflow.com/a/28872601/4499924
@@ -119,5 +118,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     } else {
       return NSString(format: "%0.1d", minutes)
     }
+  }
+
+  func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
+    return true
   }
 }
