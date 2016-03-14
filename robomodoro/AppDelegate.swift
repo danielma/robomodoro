@@ -94,7 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     let timeLeftInMode = countdownUntil.timeIntervalSinceNow
 
     if (timeLeftInMode <= 0) {
-      if (currentMode == .Break) {
+      if (currentMode == .Break || currentMode == .LongBreak) {
         startWorkMode("")
       } else {
         completedPomodoro()
