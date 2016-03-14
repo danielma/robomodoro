@@ -23,7 +23,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   let menu = NSMenu()
   let workTime = 25 * 60.0
   let breakTime = 5 * 60.0
+  let longBreakTime = 15 * 60.0
+  let longBreakInterval = 4
   let showSeconds = false
+  var completedPomodoros = 0
+  let completedCountMenuItem = NSMenuItem(title: "Completed: 0", action: nil, keyEquivalent: "")
   var startedSectionAt = 0
   var countdownUntil = NSDate()
   var currentMode = PomodoroMode.Disabled
@@ -36,6 +40,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     menu.addItem(NSMenuItem(title: "👔 Work", action: Selector("startWorkMode:"), keyEquivalent: "s"))
     menu.addItem(NSMenuItem(title: "☕ Break", action: Selector("startBreakMode:"), keyEquivalent: "b"))
     menu.addItem(NSMenuItem(title: "🔌 Disable", action: Selector("startDisabledMode:"), keyEquivalent: "d"))
+    menu.addItem(NSMenuItem.separatorItem())
+    menu.addItem(self.completedCountMenuItem)
     menu.addItem(NSMenuItem.separatorItem())
     menu.addItem(NSMenuItem(title: "Quit", action: Selector("terminate:"), keyEquivalent: "q"))
     
@@ -82,11 +88,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
       if (currentMode == .Break) {
         startWorkMode("")
       } else {
+        completedPomodoro()
         startBreakMode("")
       }
     } else {
       updateMenuText()
     }
+  }
+
+  func completedPomodoro() {
+    completedPomodoros = completedPomodoros + 1
+    completedCountMenuItem.title = "Completed: \(completedPomodoros)"
   }
   
   func updateMenuText() {
