@@ -16,6 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   enum PomodoroMode: String {
     case Work = "👔"
     case Break = "☕"
+    case LongBreak = "😴"
     case Disabled = "🍅"
   }
 
@@ -26,8 +27,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   let longBreakTime = 15 * 60.0
   let longBreakInterval = 4
   let showSeconds = false
-  var completedPomodoros = 0
   let completedCountMenuItem = NSMenuItem(title: "Completed: 0", action: nil, keyEquivalent: "")
+  var completedPomodoros = 0
   var startedSectionAt = 0
   var countdownUntil = NSDate()
   var currentMode = PomodoroMode.Disabled
@@ -74,6 +75,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     updateMenuText()
   }
 
+  func startLongBreakMode(sender: AnyObject) {
+    ensureTimer()
+    currentMode = .LongBreak
+    countdownUntil = NSDate(timeIntervalSinceNow: longBreakTime)
+    showNotification("Long break time!")
+    updateMenuText()
+  }
+
   func startDisabledMode(sender: AnyObject) {
     currentTimer.invalidate()
     currentMode = .Disabled
@@ -89,7 +98,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         startWorkMode("")
       } else {
         completedPomodoro()
-        startBreakMode("")
       }
     } else {
       updateMenuText()
@@ -99,6 +107,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   func completedPomodoro() {
     completedPomodoros = completedPomodoros + 1
     completedCountMenuItem.title = "Completed: \(completedPomodoros)"
+
+    if (completedPomodoros % longBreakInterval == 0) {
+      startLongBreakMode("")
+    } else {
+      startBreakMode("")
+    }
   }
   
   func updateMenuText() {
