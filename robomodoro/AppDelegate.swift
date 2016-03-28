@@ -38,12 +38,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
   func applicationDidFinishLaunching(aNotification: NSNotification) {
     updateMenuText()
-    menu.addItem(NSMenuItem(title: "👔 Work", action: Selector("startWorkMode:"), keyEquivalent: "s"))
-    menu.addItem(NSMenuItem(title: "☕ Break", action: Selector("startBreakMode:"), keyEquivalent: "b"))
-    menu.addItem(NSMenuItem(title: "🔌 Disable", action: Selector("startDisabledMode:"), keyEquivalent: "d"))
+    menu.addItem(NSMenuItem(title: "👔 Work", action: #selector(startWorkMode), keyEquivalent: "s"))
+    menu.addItem(NSMenuItem(title: "☕ Break", action: #selector(startBreakMode), keyEquivalent: "b"))
+    menu.addItem(NSMenuItem(title: "🔌 Disable", action: #selector(startDisabledMode), keyEquivalent: "d"))
     menu.addItem(NSMenuItem.separatorItem())
     menu.addItem(self.completedCountMenuItem)
     menu.addItem(NSMenuItem.separatorItem())
+    menu.addItem(NSMenuItem(title: "About robomodoro", action: #selector(showAboutWindow), keyEquivalent: ""))
     menu.addItem(NSMenuItem(title: "Quit", action: Selector("terminate:"), keyEquivalent: "q"))
     
     statusItem.menu = menu
@@ -54,9 +55,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
   func ensureTimer() {
     if (!currentTimer.valid) {
-      currentTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("updateMenuTextFromTimer:"), userInfo: nil, repeats: true)
+      currentTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateMenuTextFromTimer), userInfo: nil, repeats: true)
       currentTimer.tolerance = 0.5
     }
+  }
+
+  func showAboutWindow(sender: AnyObject) {
+    NSApplication.sharedApplication().orderFrontStandardAboutPanel("")
   }
 
   func startWorkMode(sender: AnyObject) {
