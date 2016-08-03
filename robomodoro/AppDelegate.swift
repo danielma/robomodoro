@@ -129,6 +129,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
   func showNotification(text: String) {
     let notification:NSUserNotification = NSUserNotification()
+    notification.identifier = "com.danielma.robomodoro-notification"
     notification.title = "Robomodoro"
     notification.subtitle = "\(currentMode.rawValue) \(text)"
     notification.soundName = NSUserNotificationDefaultSoundName
