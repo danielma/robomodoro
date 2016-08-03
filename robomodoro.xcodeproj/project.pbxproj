@@ -313,7 +313,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = robomodoro/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = danielma.robomodoro;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danielma.robomodoro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -325,7 +325,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = robomodoro/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = danielma.robomodoro;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danielma.robomodoro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
