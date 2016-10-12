@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     case Disabled = "🍅"
   }
 
-  let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(NSVariableStatusItemLength)
+  let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
   let menu = NSMenu()
   let workTime = 25 * 60.0
   let breakTime = 5 * 60.0
@@ -30,77 +30,81 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   let completedCountMenuItem = NSMenuItem(title: "Completed: 0", action: nil, keyEquivalent: "")
   var completedPomodoros = 0
   var startedSectionAt = 0
-  var countdownUntil = NSDate()
+  var countdownUntil = Date()
   var currentMode = PomodoroMode.Disabled
-  var currentTimer = NSTimer()
-  var userNotifications = NSUserNotificationCenter.defaultUserNotificationCenter()
-  var notificationCenter = NSNotificationCenter.defaultCenter()
+  var currentTimer = Timer()
+  var userNotifications = NSUserNotificationCenter.default
+  var notificationCenter = NotificationCenter.default
 
-  func applicationDidFinishLaunching(aNotification: NSNotification) {
+  func applicationDidFinishLaunching(_ aNotification: Notification) {
     updateMenuText()
     menu.addItem(NSMenuItem(title: "👔 Work", action: #selector(startWorkMode), keyEquivalent: "s"))
     menu.addItem(NSMenuItem(title: "☕ Break", action: #selector(startBreakMode), keyEquivalent: "b"))
     menu.addItem(NSMenuItem(title: "🔌 Disable", action: #selector(startDisabledMode), keyEquivalent: "d"))
-    menu.addItem(NSMenuItem.separatorItem())
+    menu.addItem(NSMenuItem.separator())
     menu.addItem(self.completedCountMenuItem)
-    menu.addItem(NSMenuItem.separatorItem())
+    menu.addItem(NSMenuItem.separator())
     menu.addItem(NSMenuItem(title: "About robomodoro", action: #selector(showAboutWindow), keyEquivalent: ""))
-    menu.addItem(NSMenuItem(title: "Quit", action: Selector("terminate:"), keyEquivalent: "q"))
+    menu.addItem(NSMenuItem(title: "Quit", action: #selector(terminate), keyEquivalent: "q"))
     
     statusItem.menu = menu
   }
   
-  func applicationWillTerminate(aNotification: NSNotification) {
+  func applicationWillTerminate(_ aNotification: Notification) {
   }
 
   func ensureTimer() {
-    if (!currentTimer.valid) {
-      currentTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateMenuTextFromTimer), userInfo: nil, repeats: true)
+    if (!currentTimer.isValid) {
+      currentTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateMenuTextFromTimer), userInfo: nil, repeats: true)
       currentTimer.tolerance = 0.5
     }
   }
 
-  func showAboutWindow(sender: AnyObject) {
-    NSApplication.sharedApplication().orderFrontStandardAboutPanel("")
+  func showAboutWindow(_ sender: AnyObject) {
+    NSApplication.shared().orderFrontStandardAboutPanel("")
   }
 
-  func startWorkMode(sender: AnyObject) {
+  func terminate(_ sender: AnyObject) {
+    NSApplication.shared().terminate(self)
+  }
+
+  func startWorkMode(_ sender: AnyObject) {
     ensureTimer()
     currentMode = .Work
-    countdownUntil = NSDate(timeIntervalSinceNow: workTime)
+    countdownUntil = Date(timeIntervalSinceNow: workTime)
     showNotification("Work time!")
     updateMenuText()
   }
 
-  func startBreakMode(sender: AnyObject) {
+  func startBreakMode(_ sender: AnyObject) {
     ensureTimer()
     currentMode = .Break
-    countdownUntil = NSDate(timeIntervalSinceNow: breakTime)
+    countdownUntil = Date(timeIntervalSinceNow: breakTime)
     showNotification("Break time!")
     updateMenuText()
   }
 
-  func startLongBreakMode(sender: AnyObject) {
+  func startLongBreakMode(_ sender: AnyObject) {
     ensureTimer()
     currentMode = .LongBreak
-    countdownUntil = NSDate(timeIntervalSinceNow: longBreakTime)
+    countdownUntil = Date(timeIntervalSinceNow: longBreakTime)
     showNotification("Long break time!")
     updateMenuText()
   }
 
-  func startDisabledMode(sender: AnyObject) {
+  func startDisabledMode(_ sender: AnyObject) {
     currentTimer.invalidate()
     currentMode = .Disabled
-    countdownUntil = NSDate()
+    countdownUntil = Date()
     updateMenuText()
   }
 
-  func updateMenuTextFromTimer(sender: AnyObject) {
+  func updateMenuTextFromTimer(_ sender: AnyObject) {
     let timeLeftInMode = countdownUntil.timeIntervalSinceNow
 
     if (timeLeftInMode <= 0) {
       if (currentMode == .Break || currentMode == .LongBreak) {
-        startWorkMode("")
+        startWorkMode("" as AnyObject)
       } else {
         completedPomodoro()
       }
@@ -114,9 +118,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     completedCountMenuItem.title = "Completed: \(completedPomodoros)"
 
     if (completedPomodoros % longBreakInterval == 0) {
-      startLongBreakMode("")
+      startLongBreakMode("" as AnyObject)
     } else {
-      startBreakMode("")
+      startBreakMode("" as AnyObject)
     }
   }
   
@@ -127,7 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     }
   }
 
-  func showNotification(text: String) {
+  func showNotification(_ text: String) {
     let notification:NSUserNotification = NSUserNotification()
     notification.identifier = "com.danielma.robomodoro-notification"
     notification.title = "Robomodoro"
@@ -138,12 +142,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
   }
 
   // thanks http://stackoverflow.com/a/28872601/4499924
-  func stringFromTimeInterval(interval: NSTimeInterval) -> NSString {
+  func stringFromTimeInterval(_ interval: TimeInterval) -> NSString {
     if (interval < 1.0) { return "" }
 
     let intervalAsInteger = Int(interval)
     let seconds = intervalAsInteger % 60
-    let minutes = Int(showSeconds ? (intervalAsInteger / 60) % 60 : round(interval / 60.0) % 60)
+    let minutes = Int(showSeconds ?
+      (intervalAsInteger / 60) % 60 :
+      Int(round(interval / 60.0)) % 60)
 
     if (showSeconds) {
       return NSString(format: "%0.2d:%0.2d", minutes, seconds)
@@ -152,7 +158,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     }
   }
 
-  func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
+  func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
     return true
   }
 }
