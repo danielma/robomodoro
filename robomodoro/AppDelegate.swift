@@ -43,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     menu.addItem(NSMenuItem(title: "🔌 Disable", action: #selector(startDisabledMode), keyEquivalent: "d"))
     menu.addItem(NSMenuItem.separator())
     menu.addItem(self.completedCountMenuItem)
+    menu.addItem(NSMenuItem(title: "Reset", action: #selector(resetCompletionCount), keyEquivalent: "r"))
     menu.addItem(NSMenuItem.separator())
     menu.addItem(NSMenuItem(title: "About robomodoro", action: #selector(showAboutWindow), keyEquivalent: ""))
     menu.addItem(NSMenuItem(title: "Quit", action: #selector(terminate), keyEquivalent: "q"))
@@ -66,6 +67,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
   func terminate(_ sender: AnyObject) {
     NSApplication.shared().terminate(self)
+  }
+
+  func resetCompletionCount(_ sender: AnyObject) {
+    completedPomodoros = 0
+    updateCompletedItemText()
   }
 
   func startWorkMode(_ sender: AnyObject) {
@@ -115,13 +121,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
   func completedPomodoro() {
     completedPomodoros = completedPomodoros + 1
-    completedCountMenuItem.title = "Completed: \(completedPomodoros)"
+    updateCompletedItemText()
 
     if (completedPomodoros % longBreakInterval == 0) {
       startLongBreakMode("" as AnyObject)
     } else {
       startBreakMode("" as AnyObject)
     }
+  }
+
+  func updateCompletedItemText() {
+    completedCountMenuItem.title = "Completed: \(completedPomodoros)"
   }
   
   func updateMenuText() {
